@@ -2,7 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Space_Grotesk } from 'next/font/google'
+import { Noto_Naskh_Arabic } from 'next/font/google';
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
@@ -12,11 +12,14 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 
-const space_grotesk = Space_Grotesk({
-  subsets: ['latin'],
+const noto_naskh_arabic = Noto_Naskh_Arabic({
+  subsets: ['arabic'],
   display: 'swap',
-  variable: '--font-space-grotesk',
-})
+  variable: '--font-noto-naskh-arabic',
+  weight: ['500', '600', '700'],
+  preload: true,
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -64,7 +67,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${space_grotesk.variable} scroll-smooth`}
+      dir="rtl"
+      className={`${noto_naskh_arabic.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <link
