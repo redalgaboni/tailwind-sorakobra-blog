@@ -1,0 +1,25 @@
+version: '3'
+name: prod-blog-0.1
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: ./Docker/staging.Dockerfile
+    image: staging/web:0.21
+    environment:
+      - WATCHPACK_POLLING=true  # Enable polling for file changes
+      - NODE_ENV=development  # Set environment variables
+    command: npm run dev  # sleep 3600 #Command to run the application
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../:/app  # Mount the current directory to /app in the container
+      - /app/node_modules  # Prevent overwriting node_modules in the container
+      - /app/.next  # Prevent overwriting .next build artifacts
+volumes:
+  data_blog:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /Users/redaer/Documents/WORK/00_YACODATA/02_ALBAB/tailwind-nextjs-starter-blog
