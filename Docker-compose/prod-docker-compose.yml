@@ -1,0 +1,13 @@
+version: '3'
+name: prod-blog-0.1
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: ./Docker/Dockerfile
+    image: prod/web:0.11
+    environment:
+      - NODE_ENV=development  # Set environment variables
+    command: npm start  # sleep 3600 #Command to run the application
+    ports:
+      - "3000:3000"
