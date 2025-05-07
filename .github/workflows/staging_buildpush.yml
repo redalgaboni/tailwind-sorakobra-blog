@@ -18,16 +18,14 @@ jobs:
 
 
     - name: Install CA Certificate
-      if: ${{ secrets.REGISTRY_CA_CERT }}
       run: |
-        # Create certs directory in workspace
-        mkdir -p $HOME/.docker/certs.d/$(echo ${{ secrets.REGISTRY }} | cut -d/ -f1)
+        # Create secure directory structure
+        CERT_DIR="$HOME/.docker/certs.d/registry-albab.sorakobra.com:5000"
+        mkdir -p "$CERT_DIR" && chmod 700 "$CERT_DIR"
         
-        # Save certificate with proper permissions
-        echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > $HOME/.docker/certs.d/$(echo ${{ secrets.REGISTRY }} | cut -d/ -f1)/ca.crt
-        
-        # Configure Docker to use custom certs path
-        echo "{\"tlscacert\": \"$HOME/.docker/certs.d/$(echo ${{ secrets.REGISTRY }} | cut -d/ -f1)/ca.crt\"}" > $HOME/.docker/config.json
+        # Securely write certificate
+        echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > "$CERT_DIR/ca.crt"
+        chmod 600 "$CERT_DIR/ca.crt"
 
     - name: Restart Docker
       run: sudo systemctl restart docker
