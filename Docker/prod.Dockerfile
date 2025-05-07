@@ -1,23 +1,29 @@
 # Use a specific Node.js version as the base image
 FROM node:20
 
+# Install Corepack and enable it
+RUN corepack enable
+
+# Create a non-root user and set appropriate permissions
+RUN groupadd -g 1001 sorakobra && \
+    useradd -u 1001 -g sorakobra -m sorakobra && \
+    mkdir -p /app && \
+    chown -R sorakobra:sorakobra /app
+
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json (or yarn.lock) first to leverage caching
-COPY package*.json ./
+# Copy package files first to leverage caching
+COPY --chown=sorakobra:sorakobra package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy the entire application code
-COPY . .
+COPY --chown=sorakobra:sorakobra . .
 
 # Build the application
-RUN npm run build
-
-# Expose the port on which your app will run
-#EXPOSE 3000
-
-# Command to run the application
-#CMD ["npm", "start"]
+RUN mkdir -p .next && \
+    chown -R sorakobra:sorakobra .next && \
+    chmod -R 775 .next && \
+    npm run build
