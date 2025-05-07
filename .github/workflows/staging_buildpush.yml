@@ -16,12 +16,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+
     - name: Install CA Certificate
+      if: ${{ secrets.REGISTRY_CA_CERT }}
       run: |
-        echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > /usr/local/share/ca-certificates/registry.crt
-        sudo update-ca-certificates
-        sudo mkdir -p /etc/docker/certs.d/registry-albab.sorakobra.com:5000
-        sudo cp /usr/local/share/ca-certificates/registry.crt /etc/docker/certs.d/registry-albab.sorakobra.com:5000/ca.crt
+        # Create certs directory in workspace
+        mkdir -p $HOME/.docker/certs.d/$(echo ${{ secrets.REGISTRY }} | cut -d/ -f1)
+        
+        # Save certificate with proper permissions
+        echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > $HOME/.docker/certs.d/$(echo ${{ secrets.REGISTRY }} | cut -d/ -f1)/ca.crt
+        
+        # Configure Docker to use custom certs path
+        echo "{\"tlscacert\": \"$HOME/.docker/certs.d/$(echo ${{ secrets.REGISTRY }} | cut -d/ -f1)/ca.crt\"}" > $HOME/.docker/config.json
 
     - name: Restart Docker
       run: sudo systemctl restart docker
