@@ -27,11 +27,15 @@ jobs:
         echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > "$CERT_DIR/ca.crt"
         chmod 644 "$CERT_DIR/ca.crt" 
 
-    - name: Debug - Test registry access
+    #- name: Debug - Test registry access
+    #  run: |
+    #    curl -vk https://${{ secrets.REGISTRY_HOST }}/v2/_catalog \
+    #      --cacert "$HOME/.docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt" \
+    #      -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
+
+    - name: Login to private Docker registry
       run: |
-        curl -vk https://${{ secrets.REGISTRY_HOST }}/v2/_catalog \
-          --cacert "$HOME/.docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt" \
-          -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
+        docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ secrets.REGISTRY_URL }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
