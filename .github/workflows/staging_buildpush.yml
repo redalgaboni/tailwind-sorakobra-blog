@@ -3,7 +3,7 @@ name: Build and Push Image
 on:
   push:
     branches: [ staging ]
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: albab/prod/sorakobra-web
@@ -25,15 +25,11 @@ jobs:
         
         # Write certificate (ensure secret is base64-encoded)
         echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > "$CERT_DIR/ca.crt"
-        chmod 644 "$CERT_DIR/ca.crt"
-
-        # Verify certificate
-        openssl x509 -in "$CERT_DIR/ca.crt" -noout -text | grep -A1 "Subject Alternative Name"
-        echo "Certificate fingerprint:"
-        openssl x509 -in "$CERT_DIR/ca.crt" -noout -fingerprint
+        chmod 644 "$CERT_DIR/ca.crt" 
 
     - name: Debug - Test registry access
       run: |
+        echo https://${{ env.REGISTRY_HOST }}/v2/_catalog
         curl -v https://${{ env.REGISTRY_HOST }}/v2/_catalog \
           --cacert "$HOME/.docker/certs.d/${{ env.REGISTRY_HOST }}/ca.crt" \
           -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
