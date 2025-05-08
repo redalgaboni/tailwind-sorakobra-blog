@@ -20,7 +20,7 @@ jobs:
     - name: Install CA Certificate
       run: |
         # Create directory structure
-        CERT_DIR="$HOME/.docker/certs.d/${{ env.REGISTRY_HOST }}"
+        CERT_DIR="$HOME/.docker/certs.d/${{ secrets.REGISTRY_HOST }}"
         mkdir -p "$CERT_DIR"
         
         # Write certificate (ensure secret is base64-encoded)
@@ -29,9 +29,9 @@ jobs:
 
     - name: Debug - Test registry access
       run: |
-        echo https://${{ env.REGISTRY_HOST }}/v2/_catalog
-        curl -v https://${{ env.REGISTRY_HOST }}/v2/_catalog \
-          --cacert "$HOME/.docker/certs.d/${{ env.REGISTRY_HOST }}/ca.crt" \
+        echo https://${{ secrets.REGISTRY_HOST }}/v2/_catalog
+        curl -v https://${{ secrets.REGISTRY_HOST }}/v2/_catalog \
+          --cacert "$HOME/.docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt" \
           -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Set up Docker Buildx
@@ -52,9 +52,9 @@ jobs:
         context: .
         file: ./Docker/prod.Dockerfile
         tags: |
-          ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:latest
-          ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:latest
+          ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         push: true
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
