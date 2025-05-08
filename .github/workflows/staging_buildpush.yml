@@ -29,8 +29,7 @@ jobs:
 
     - name: Debug - Test registry access
       run: |
-        echo https://${{ secrets.REGISTRY_HOST }}/v2/_catalog
-        curl -v https://${{ secrets.REGISTRY_HOST }}/v2/_catalog \
+        curl -vk https://${{ secrets.REGISTRY_HOST }}/v2/_catalog \
           --cacert "$HOME/.docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt" \
           -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
 
