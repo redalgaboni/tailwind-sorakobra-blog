@@ -16,54 +16,57 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-
-    - name: Install CA Certificate
+    - name: Install CA Certificate (Full System Trust)
       run: |
-        # 1. Create Docker certs directory
+        # 1. Create directory structure
         CERT_DIR="/etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}"
         sudo mkdir -p "$CERT_DIR"
         
-        # 2. Install certificate
+        # 2. Install certificate in Docker's location
         echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d | sudo tee "$CERT_DIR/ca.crt" >/dev/null
-        sudo chmod 644 "$CERT_DIR/ca.crt"
         
-        # 3. Also install in system trust store
+        # 3. Install in system trust store (Ubuntu-specific)
         echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d | sudo tee /usr/local/share/ca-certificates/registry-ca.crt >/dev/null
-        sudo update-ca-certificates
+        sudo update-ca-certificates --fresh
         
-        # 4. Verify installation
+        # 4. Verify installations
         openssl x509 -in "$CERT_DIR/ca.crt" -noout -text | grep -A1 "Subject Alternative Name"
         ls -la "$CERT_DIR"
+        ls -la /usr/local/share/ca-certificates/
 
-    - name: Configure Docker
+    - name: Configure Docker Daemon
       run: |
-        # Restart docker to pick up new certificates
+        # Configure Docker to use system certs
+        echo '{
+          "mtu": 1460,
+          "experimental": true,
+          "features": {
+            "buildkit": true
+          },
+          "tlscacert": "/etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt"
+        }' | sudo tee /etc/docker/daemon.json
+        
+        # Restart docker
         sudo systemctl restart docker
         
-        # Verify docker can see the certificate
-        sudo ls -la /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/
+        # Verify Docker sees the cert
+        sudo docker info | grep -A5 "Insecure Registries"
 
-    - name: Login to Registry
-      uses: docker/login-action@v3
-      with:
-        registry: ${{ secrets.REGISTRY_HOST }}
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }} 
+    - name: Test Certificate Trust
+      run: |
+        # Test with openssl
+        openssl s_client -connect ${{ secrets.REGISTRY_HOST }} -showcerts </dev/null 2>/dev/null | openssl x509 -noout -text | grep -A1 "Subject Alternative Name"
+        
+        # Test with curl
+        curl -v --cacert /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt https://${{ secrets.REGISTRY_HOST }}/v2/_catalog
 
-    #- name: Debug - Test registry access
-    #  run: |
-    #    curl -vk https://${{ secrets.REGISTRY_HOST }}/v2/_catalog \
-    #      --cacert "$HOME/.docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt" \
-    #      -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
-
-    #- name: Login to private Docker registry
-    #  run: |
-    #    docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ secrets.REGISTRY_HOST }}
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      with:
-        driver-opts: network=host
+    - name: Login to Registry (With Explicit CA)
+      run: |
+        docker --debug \
+          --tlscacert /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt \
+          login ${{ secrets.REGISTRY_HOST }} \
+          -u ${{ secrets.REGISTRY_USERNAME }} \
+          -p ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build and Push
       uses: docker/build-push-action@v5
@@ -75,6 +78,3 @@ jobs:
           ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:latest
           ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         push: true
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache-new
-        cache: true
