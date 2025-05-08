@@ -19,22 +19,26 @@ jobs:
 
     - name: Install CA Certificate
       run: |
-        # Create secure directory structure
-        CERT_DIR="$HOME/.docker/certs.d/registry-albab.sorakobra.com:5000"
-        mkdir -p "$CERT_DIR" && chmod 700 "$CERT_DIR"
+        # Create directory structure
+        CERT_DIR="$HOME/.docker/certs.d/${{ env.REGISTRY_HOST }}"
+        mkdir -p "$CERT_DIR"
         
-        # Securely write certificate
+        # Write certificate (ensure secret is base64-encoded)
         echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d > "$CERT_DIR/ca.crt"
-        chmod 600 "$CERT_DIR/ca.crt"
+        chmod 644 "$CERT_DIR/ca.crt"
 
-    - name: Restart Docker
-      run: sudo systemctl restart docker
+        # Verify certificate
+        openssl x509 -in "$CERT_DIR/ca.crt" -noout -text | grep -A1 "Subject Alternative Name"
+        echo "Certificate fingerprint:"
+        openssl x509 -in "$CERT_DIR/ca.crt" -noout -fingerprint
+
+    - name: Debug - List certs directory
+      run: ls -la "$HOME/.docker/certs.d/${{ env.REGISTRY_HOST }}"
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
       with:
-        driver-opts: |
-          network=host
+        driver-opts: network=host
 
     - name: Login to Hetzner Registry
       uses: docker/login-action@v3
@@ -43,13 +47,11 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
-    - name: Cache Docker layers
-      uses: actions/cache@v3
-      with:
-        path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
+    - name: Debug - Test registry access
+      run: |
+        curl -v https://${{ env.REGISTRY_HOST }}/v2/_catalog \
+          --cacert "$HOME/.docker/certs.d/${{ env.REGISTRY_HOST }}/ca.crt" \
+          -u ${{ secrets.REGISTRY_USERNAME }}:${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build and Push
       uses: docker/build-push-action@v5
@@ -57,9 +59,9 @@ jobs:
         context: .
         file: ./Docker/prod.Dockerfile
         tags: |
-          ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          ${{ secrets.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:latest
+          ${{ env.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         push: true
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
