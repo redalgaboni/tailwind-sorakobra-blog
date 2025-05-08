@@ -35,7 +35,7 @@ jobs:
 
     - name: Login to private Docker registry
       run: |
-        docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ secrets.REGISTRY_URL }}
+        docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} ${{ secrets.REGISTRY_HOST }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
