@@ -18,7 +18,7 @@ jobs:
 
     - name: Test Registry Connectivity
       run: |
-        curl -v https://${{ secrets.REGISTRY_HOST }}:5000/v2/
+        curl -v https://${{ secrets.REGISTRY_HOST }}/v2/
 
     - name: Login to Private Registry (Let's Encrypt)
       uses: docker/login-action@v3
