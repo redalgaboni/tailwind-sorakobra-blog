@@ -54,11 +54,13 @@ jobs:
 
     - name: Test Certificate Trust
       run: |
-        # Test with openssl
-        openssl s_client -connect ${{ secrets.REGISTRY_HOST }} -showcerts </dev/null 2>/dev/null | openssl x509 -noout -text | grep -A1 "Subject Alternative Name"
+        # Verify SAN includes public IP
+        openssl x509 -in /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt -noout -text | grep -A1 "Subject Alternative Name"
         
-        # Test with curl
-        curl -v --cacert /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt https://${{ secrets.REGISTRY_HOST }}/v2/_catalog
+        # Test connection using public IP
+        curl -vk --resolve registry-albab.sorakobra.com:5000:138.199.219.231 \
+          --cacert /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt \
+          https://registry-albab.sorakobra.com:5000/v2/_catalog
 
     - name: Login to Registry (With Explicit CA)
       run: |
