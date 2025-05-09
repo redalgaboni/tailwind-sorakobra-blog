@@ -16,59 +16,34 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install CA Certificate (Full System Trust)
+    - name: Install CA Certificate (Full Trust)
       run: |
-        # 1. Create directory structure
-        CERT_DIR="/etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}"
-        sudo mkdir -p "$CERT_DIR"
-        
-        # 2. Install certificate in Docker's location
-        echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d | sudo tee "$CERT_DIR/ca.crt" >/dev/null
-        
-        # 3. Install in system trust store (Ubuntu-specific)
+        # System-wide trust
         echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d | sudo tee /usr/local/share/ca-certificates/registry-ca.crt >/dev/null
         sudo update-ca-certificates --fresh
-        
-        # 4. Verify installations
-        openssl x509 -in "$CERT_DIR/ca.crt" -noout -text | grep -A1 "Subject Alternative Name"
-        ls -la "$CERT_DIR"
-        ls -la /usr/local/share/ca-certificates/
-
-    - name: Configure Docker Daemon
+    
+        # Docker-specific trust
+        CERT_DIR="/etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}"
+        sudo mkdir -p "$CERT_DIR"
+        echo "${{ secrets.REGISTRY_CA_CERT }}" | base64 -d | sudo tee "$CERT_DIR/ca.crt" >/dev/null
+        sudo chmod 644 "$CERT_DIR/ca.crt"
+    
+    - name: Configure Docker Client
       run: |
-        # Configure Docker to use system certs
+        # Force Docker client to use custom CA
+        mkdir -p ~/.docker
         echo '{
-          "mtu": 1460,
-          "experimental": true,
-          "features": {
-            "buildkit": true
-          },
+          "credsStore": "desktop",
+          "auths": {},
           "tlscacert": "/etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt"
-        }' | sudo tee /etc/docker/daemon.json
-        
-        # Restart docker
-        sudo systemctl restart docker
-        
-        # Verify Docker sees the cert
-        sudo docker info | grep -A5 "Insecure Registries"
-
-    - name: Test Certificate Trust
+        }' > ~/.docker/config.json
+    
+    - name: Login to Registry (Secure)
       run: |
-        # Verify SAN includes public IP
-        openssl x509 -in /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt -noout -text | grep -A1 "Subject Alternative Name"
-        
-        # Test connection using public IP
-        curl -vk --resolve registry-albab.sorakobra.com:5000:138.199.219.231 \
-          --cacert /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt \
-          https://registry-albab.sorakobra.com:5000/v2/_catalog
-
-    - name: Login to Registry (With Explicit CA)
-      run: |
-        docker --debug \
-          --tlscacert /etc/docker/certs.d/${{ secrets.REGISTRY_HOST }}/ca.crt \
-          login ${{ secrets.REGISTRY_HOST }} \
-          -u ${{ secrets.REGISTRY_USERNAME }} \
-          -p ${{ secrets.REGISTRY_PASSWORD }}
+        echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login \
+          -u "${{ secrets.REGISTRY_USERNAME }}" \
+          --password-stdin \
+          ${{ secrets.REGISTRY_HOST }}
 
     - name: Build and Push
       uses: docker/build-push-action@v5
