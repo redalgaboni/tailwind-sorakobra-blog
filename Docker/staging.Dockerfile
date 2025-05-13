@@ -18,13 +18,15 @@ COPY --chown=sorakobra:sorakobra package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
-#
+
+# Run prepare scripts if necessary
+RUN npm run prepare
 
 # Copy the entire application code
 COPY --chown=sorakobra:sorakobra . .
 
 # Build the application
-RUN mkdir -p .next && \
-    chown -R sorakobra:sorakobra .next && \
-    chmod -R 775 .next && \
+RUN mkdir -p .next public && \
+    chown -R sorakobra:sorakobra .next public && \
+    chmod -R 775 .next public && \
     npm run build

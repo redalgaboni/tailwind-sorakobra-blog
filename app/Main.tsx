@@ -38,7 +38,7 @@ export default function Home({ posts }) {
     script.onerror = () => {
       console.error('Failed to load Buy Me a Coffee script');
       buttonRef.current!.innerHTML = `
-        <a href="https://www.buymeacoffee.com/redalgaboni" target="_blank" rel="noopener noreferrer">
+        <a href="https://buymeacoffee.com/redalgaboni" target="_blank" rel="noopener noreferrer">
           <img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" 
                alt="مساهمتكم مهمة لاستمرارنا" 
                style="height: 60px; width: 217px"/>

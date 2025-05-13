@@ -5,11 +5,13 @@ services:
     build:
       context: ..
       dockerfile: ./Docker/staging.Dockerfile
-    image: staging/web:0.26
+    image: staging/web:0.27
     environment:
       - WATCHPACK_POLLING=true  # Enable polling for file changes
       - NODE_ENV=development  # Set environment variables
-    command: npm run dev  # sleep 3600 #Command to run the application
+    env_file:
+      - .envs/.staging.env  # Load environment variables from a file
+    command: npm run dev 
     ports:
       - "3000:3000"
     volumes:
