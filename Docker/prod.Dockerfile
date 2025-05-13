@@ -26,7 +26,7 @@ RUN npm run prepare
 COPY --chown=sorakobra:sorakobra . .
 
 # Build the application
-RUN mkdir -p .next && \
-    chown -R sorakobra:sorakobra .next && \
-    chmod -R 775 .next && \
+RUN mkdir -p .next public && \
+    chown -R sorakobra:sorakobra .next public && \
+    chmod -R 775 .next public && \
     npm run build
