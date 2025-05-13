@@ -1,29 +1,30 @@
+# Use a specific Node.js version as the base image
 FROM node:20
 
-# Create app directory and set permissions
-RUN mkdir -p /app/public && \
-    chown -R node:node /app
+# Install Corepack and enable it
+RUN corepack enable
 
+# Create a non-root user and set appropriate permissions
+RUN groupadd -g 1001 sorakobra && \
+    useradd -u 1001 -g sorakobra -m sorakobra && \
+    mkdir -p /app && \
+    chown -R sorakobra:sorakobra /app
+
+# Set the working directory
 WORKDIR /app
 
-# Copy package files first for better caching
-COPY --chown=node:node package*.json ./
+# Copy package files first to leverage caching
+COPY --chown=sorakobra:sorakobra package*.json ./
 
 # Install dependencies
-RUN npm install --legacy-peer-deps
+RUN npm install --omit=dev --legacy-peer-deps
+#
 
-# Copy application code
-COPY --chown=node:node . .
+# Copy the entire application code
+COPY --chown=sorakobra:sorakobra . .
 
-# Build application (with explicit public directory creation)
-RUN mkdir -p public && \
+# Build the application
+RUN mkdir -p .next && \
+    chown -R sorakobra:sorakobra .next && \
+    chmod -R 775 .next && \
     npm run build
-
-# Verify build artifacts exist
-RUN ls -la .next && \
-    [ -f ".next/BUILD_ID" ] || (echo "Missing build artifacts!" && exit 1)
-
-# Runtime configuration
-USER node
-EXPOSE 3000
-CMD ["npm", "start"]
