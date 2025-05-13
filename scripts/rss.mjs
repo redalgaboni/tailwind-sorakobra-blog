@@ -7,7 +7,7 @@ import tagData from '../app/tag-data.json' assert { type: 'json' }
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
 import { sortPosts } from 'pliny/utils/contentlayer.js'
 
-const outputFolder = process.env.EXPORT ? 'out' : 'public'
+const outputFolder = path.join(process.cwd(), 'public')
 
 const generateRssItem = (config, post) => `
   <item>

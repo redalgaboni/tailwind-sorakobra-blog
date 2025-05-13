@@ -18,6 +18,7 @@ COPY --chown=sorakobra:sorakobra package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
+#
 
 # Copy the entire application code
 COPY --chown=sorakobra:sorakobra . .

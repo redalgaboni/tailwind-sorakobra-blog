@@ -1,13 +1,23 @@
 version: '3'
-name: prod-blog-0.1
+name: prod-blog-0.11
 services:
   web:
     build:
       context: ..
-      dockerfile: ./Docker/Dockerfile
-    image: prod/web:0.11
+      dockerfile: ./Docker/prod.Dockerfile
+    image: prod/web:0.22
     environment:
-      - NODE_ENV=development  # Set environment variables
-    command: npm start  # sleep 3600 #Command to run the application
+      - NODE_ENV=production
     ports:
       - "3000:3000"
+    #volumes:
+    #  - ../:/app  # Mount the current directory to /app in the container
+    #  - /app/node_modules  # Prevent overwriting node_modules in the container
+    #  - /app/.next  # Prevent overwriting .next build artifacts
+#volumes:
+#  data_blog:
+#    driver: local
+#    driver_opts:
+#      o: bind
+#      type: none
+#      device: /Users/redaer/Documents/WORK/00_YACODATA/02_ALBAB/tailwind-sorakobra-blog

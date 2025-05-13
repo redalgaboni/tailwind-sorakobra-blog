@@ -35,10 +35,8 @@ export default function Home({ posts }) {
     script.setAttribute('data-font-color', '#ffffff');
     script.setAttribute('data-coffee-color', '#FFDD00');
 
-    // Add error handling
     script.onerror = () => {
       console.error('Failed to load Buy Me a Coffee script');
-      // Fallback to image button
       buttonRef.current!.innerHTML = `
         <a href="https://www.buymeacoffee.com/redalgaboni" target="_blank" rel="noopener noreferrer">
           <img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" 

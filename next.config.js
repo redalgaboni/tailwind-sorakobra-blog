@@ -14,6 +14,9 @@ const ContentSecurityPolicy = `
   connect-src *;
   font-src 'self';
   frame-src giscus.app
+  font-src 'self' cdnjs.buymeacoffee.com;
+  frame-src giscus.app buymeacoffee.com;
+  child-src buymeacoffee.com;
 `
 
 const securityHeaders = [
