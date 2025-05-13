@@ -16,12 +16,11 @@ WORKDIR /app
 # Copy package files first to leverage caching
 COPY --chown=sorakobra:sorakobra package*.json ./
 
-# Install production dependencies first (without husky)
-RUN npm install --omit=dev --legacy-peer-deps --ignore-scripts
+# Install dependencies
+RUN npm install --legacy-peer-deps
 
-# Install dev dependencies (for build tools)
-RUN npm install --legacy-peer-deps && \
-    npm run prepare
+# Run prepare scripts if necessary
+RUN npm run prepare
 
 # Copy the entire application code
 COPY --chown=sorakobra:sorakobra . .
