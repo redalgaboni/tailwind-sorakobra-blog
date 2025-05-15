@@ -1,36 +1,48 @@
-# Use a specific Node.js version as the base image
-FROM node:20
-
-# Install Corepack and enable it
+FROM node:20 as builder
+# Install Corepack
 RUN corepack enable
 
-# Create a non-root user and set appropriate permissions
+# Create non-root user
 RUN groupadd -g 1001 sorakobra && \
     useradd -u 1001 -g sorakobra -m sorakobra && \
     mkdir -p /app && \
     chown -R sorakobra:sorakobra /app
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package files first to leverage caching
+# Copy package.json and install dependencies
 COPY --chown=sorakobra:sorakobra package*.json ./
-
-# use non-root user
-RUN chown -R sorakobra:sorakobra /app
 USER sorakobra
-
-# Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Run prepare scripts if necessary
+# Run prepare scripts if needed
 RUN npm run prepare
 
-# Copy the entire application code
+# Copy source code and build the app
 COPY --chown=sorakobra:sorakobra . .
-
-# Build the application
 RUN mkdir -p .next public && \
     chown -R sorakobra:sorakobra .next public && \
     chmod -R 775 .next public && \
     npm run build
+
+FROM node:20-slim
+
+# Create non-root user
+RUN groupadd -g 1001 sorakobra && \
+    useradd -u 1001 -g sorakobra -m sorakobra && \
+    mkdir -p /app && \
+    chown -R sorakobra:sorakobra /app
+
+WORKDIR /app
+
+# Only copy necessary files
+COPY --from=builder --chown=sorakobra:sorakobra /app/.next ./.next
+COPY --from=builder --chown=sorakobra:sorakobra /app/public ./public
+COPY --from=builder --chown=sorakobra:sorakobra /app/package*.json ./
+COPY --from=builder --chown=sorakobra:sorakobra /app/next.config.js ./
+
+COPY --from=builder --chown=sorakobra:sorakobra /app/app ./app
+
+# Reinstall both prod and dev dependencies (for staging)
+USER sorakobra
+RUN npm install --legacy-peer-deps
