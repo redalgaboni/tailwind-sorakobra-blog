@@ -2,12 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const { email } = await req.json()
-
+  const { email_address: email } = await req.json()
+  console.log(`Received email: ${email}`)
+  
   if (!email) {
     return NextResponse.json(
       { success: false, message: 'البريد الإلكتروني مطلوب.' },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
