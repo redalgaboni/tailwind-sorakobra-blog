@@ -18,7 +18,7 @@ export default function ArabicNewsletterForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email_address: email }),
       })
   
       const result = await response.json()
