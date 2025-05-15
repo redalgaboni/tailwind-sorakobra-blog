@@ -6,7 +6,7 @@ const siteMetadata = {
   description: 'حول ما يقع في المغرب و عالمنا العربي و العالم',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://https://sorakobra.com/',
+  siteUrl: 'https://sorakobra.com/',
   siteRepo: 'https://github.com/redalgaboni/tailwind-sorakobra-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/logo.png`,

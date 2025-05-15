@@ -16,6 +16,10 @@ WORKDIR /app
 # Copy package files first to leverage caching
 COPY --chown=sorakobra:sorakobra package*.json ./
 
+# use non-root user
+RUN chown -R sorakobra:sorakobra /app
+USER sorakobra
+
 # Install dependencies
 RUN npm install --legacy-peer-deps
 

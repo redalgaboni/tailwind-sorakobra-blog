@@ -37,11 +37,14 @@ export default function Home({ posts }) {
 
     script.onerror = () => {
       console.error('Failed to load Buy Me a Coffee script');
+      const isMobile = window.innerWidth < 640;
+      const imgSrc = 'https://cdn.buymeacoffee.com/buttons/v2/default-green.png'; 
+
       buttonRef.current!.innerHTML = `
-        <a href="https://buymeacoffee.com/redalgaboni" target="_blank" rel="noopener noreferrer">
-          <img src="https://cdn.buymeacoffee.com/buttons/v2/default-green.png" 
+        <a href="https://buymeacoffee.com/redalgaboni " target="_blank" rel="noopener noreferrer">
+          <img src="${imgSrc}" 
                alt="مساهمتكم مهمة لاستمرارنا" 
-               style="height: 60px; width: 217px"/>
+               style="height: ${isMobile ? '40px' : '60px'}; width: auto; max-width: 100%;"/>
         </a>
       `;
     };

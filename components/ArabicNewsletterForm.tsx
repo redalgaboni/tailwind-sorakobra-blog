@@ -1,43 +1,39 @@
 'use client'
 
 import { useState } from 'react'
-import siteMetadata from '@/data/siteMetadata'
 
 export default function ArabicNewsletterForm() {
   const [email, setEmail] = useState('')
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    // Ensure siteMetadata.newsletter and newsletter.provider exist
-    if (!siteMetadata.newsletter || !siteMetadata.newsletter.provider) {
-      console.error('Newsletter provider is not configured');
-      return;
-    }
+    e.preventDefault()
+    setError('')
+    setSuccess(false)
   
     try {
-      const response = await fetch(
-        `https://buttondown.email/api/emails/embed-subscribe/${siteMetadata.newsletter.provider}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
   
-      if (response.ok) {
-        setSuccess(true);
-        setEmail('');
+      const result = await response.json()
+  
+      if (result.success) {
+        setSuccess(true)
+        setEmail('')
       } else {
-        console.error('Failed to subscribe:', response.statusText);
+        setError(result.message || 'فشل الاشتراك')
       }
-    } catch (error) {
-      console.error('Error subscribing to newsletter:', error);
+    } catch (err) {
+      setError('فشل الاتصال بالخادم')
+      console.error('Error:', err)
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-center pt-4">
