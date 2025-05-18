@@ -74,6 +74,9 @@ module.exports = () => {
     eslint: {
       dirs: ['app', 'components', 'layouts', 'scripts'],
     },
+    experimental: {
+      scrollRestoration: true
+    },
     images: {
       remotePatterns: [
         {
