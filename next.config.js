@@ -7,11 +7,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is plausible.io;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is plausible.sorakobra.com;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
-  connect-src * plausible.io;
+  connect-src * plausible.sorakobra.com;
   font-src 'self';
   frame-src giscus.app
   font-src 'self' cdnjs.buymeacoffee.com;
