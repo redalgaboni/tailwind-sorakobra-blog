@@ -1,6 +1,7 @@
 'use client'
 
-import { Suspense } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation' // Add this import
+import { Suspense, useEffect } from 'react'
 import Script from 'next/script'
 import siteMetadata from '@/data/siteMetadata'
 
