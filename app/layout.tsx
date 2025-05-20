@@ -12,6 +12,7 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import PlausibleTracker from '@/components/PlausibleTracker'
+import AdSense from '@/components/AdSense'
 
 const noto_naskh_arabic = Noto_Naskh_Arabic({
   subsets: ['arabic'],
@@ -101,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
         <PlausibleTracker />
+        <AdSense />
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SectionContainer>
