@@ -1,18 +1,26 @@
-import Script from 'next/script'
+'use client'
+import { useEffect } from 'react'
 
 export default function AdUnit({ slot }: { slot: string }) {
+  useEffect(() => {
+    try {
+      // Trigger rendering of the ad unit
+      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+    } catch (e) {
+      console.error('AdSense failed to render ad unit:', e)
+    }
+  }, [slot])
+
   return (
     <div className="my-8">
-      <ins className="adsbygoogle"
+      <ins
+        className="adsbygoogle"
         style={{ display: 'block' }}
         data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_ID}
-        data-ad-slot={slot}
+        data-ad-slot={process.env.AD_SLOT}
         data-ad-format="auto"
         data-full-width-responsive="true"
       />
-      <Script id={`ad-${slot}`} strategy="afterInteractive">
-        {`(adsbygoogle = window.adsbygoogle || []).push({});`}
-      </Script>
     </div>
   )
 }

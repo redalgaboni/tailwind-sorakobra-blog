@@ -13,6 +13,7 @@ import PostBanner from '@/layouts/PostBanner'
 import { Metadata } from 'next'
 import siteMetadata from '@/data/siteMetadata'
 import { notFound } from 'next/navigation'
+import AdUnit from '@/components/AdUnit'
 
 const defaultLayout = 'PostLayout'
 const layouts = {
@@ -116,5 +117,23 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
       </Layout>
     </>
+  )
+}
+
+export default async function BlogPost({ params }: { params: { slug: string } }) {
+  const post = await getPostBySlug(params.slug)
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+
+      {/* Show AdSense banner below title */}
+      <AdUnit slot={process.env.AD_SLOT} />
+
+      {/* Render content */}
+      <div className="prose">
+        <MDXRemote source={post.body} />
+      </div>
+    </article>
   )
 }
