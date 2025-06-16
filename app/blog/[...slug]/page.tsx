@@ -114,23 +114,19 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        <BlogPost slug={slug} />
       </Layout>
     </>
   )
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const post = await getPostBySlug(params.slug)
+async function BlogPost({ slug }: { slug: string }) {
+  const post = await getPostBySlug(slug)
 
   return (
     <article>
       <h1>{post.title}</h1>
-
-      {/* Show AdSense banner below title */}
-      <AdUnit slot={process.env.AD_SLOT} />
-
-      {/* Render content */}
+      <AdUnit slot={process.env.NEXT_PUBLIC_AD_SLOT} />
       <div className="prose">
         <MDXRemote source={post.body} />
       </div>
