@@ -2,7 +2,6 @@
 import Script from 'next/script'
 
 export default function AdSense() {
-    const ADSENSE_PUB_ID = process.env.ADSENSE_PUB_ID
   return (
     <Script 
       strategy="afterInteractive"
