@@ -1,10 +1,8 @@
 import 'css/prism.css'
 import 'katex/dist/katex.css'
 
-import PageTitle from '@/components/PageTitle'
 import { components } from '@/components/MDXComponents'
 import { MDXLayoutRenderer } from 'pliny/mdx-components'
-import { MDXRemote } from 'next-mdx-remote/rsc'
 import { sortPosts, coreContent, allCoreContent } from 'pliny/utils/contentlayer'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
 import type { Authors, Blog } from 'contentlayer/generated'
@@ -115,22 +113,11 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
-        <BlogPost slug={slug} />
+        <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />
+        <div className="w-full">
+          <AdUnit />
+        </div>
       </Layout>
     </>
-  )
-}
-
-async function BlogPost({ slug }: { slug: string }) {
-  const post = await getPostBySlug(slug)
-
-  return (
-    <article>
-      <h1>{post.title}</h1>
-      <AdUnit slot={process.env.NEXT_PUBLIC_AD_SLOT} />
-      <div className="prose">
-        <MDXRemote source={post.body} />
-      </div>
-    </article>
   )
 }
