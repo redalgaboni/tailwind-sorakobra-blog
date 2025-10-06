@@ -1,12 +1,53 @@
 version: '3'
-name: prod-blog-0.11
+name: staging-blog-0.1
 services:
   web:
     build:
       context: ..
       dockerfile: ./Docker/prod.Dockerfile
-    image: prod/web:0.22
+    image: prod/web:0.40
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_ADSENSE_ID=ca-pub-8610387457589622
+      - AD_SLOT=2678357934
+    env_file:
+      - ../.envs/.prod.env  # Load environment variables from a file
+    command: npm run start
     ports:
       - "3000:3000"
+    volumes:
+      - ../:/app  
+      - /app/node_modules
+      - /app/.next 
+
+  nginx:
+    image: nginx:1.29-bookworm-perl
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - web
+    user: root
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot:v5.0.0
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - nginx
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot; sleep 12h & wait $${!}; done;'"
+    restart: unless-stopped
+
+volumes:
+  data_blog:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /Users/redaer/Documents/WORK/00_YACODATA/02_ALBAB/tailwind-nextjs-starter-blog

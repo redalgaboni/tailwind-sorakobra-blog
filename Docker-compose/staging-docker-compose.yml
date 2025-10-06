@@ -1,15 +1,17 @@
 version: '3'
-name: prod-blog-0.1
+name: staging-blog-0.1
 services:
   web:
     build:
       context: ..
       dockerfile: ./Docker/staging.Dockerfile
-    image: staging/web:0.31
+    image: staging/web:0.40
     user: root
     environment:
       - WATCHPACK_POLLING=true  # Enable polling for file changes
       - NODE_ENV=development  # Set environment variables
+      - NEXT_PUBLIC_ADSENSE_ID=ca-pub-8610387457589622
+      - AD_SLOT=2678357934
     env_file:
       - ../.envs/.staging.env  # Load environment variables from a file
     command: npm run dev 
@@ -25,4 +27,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: $PATH
+      device: /Users/redaer/Documents/WORK/00_YACODATA/02_ALBAB/tailwind-nextjs-starter-blog
