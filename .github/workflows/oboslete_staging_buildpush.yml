@@ -1,9 +1,9 @@
 name: Build and Push Image
 
-on:
-  push:
-    branches: [ staging ]
-  workflow_dispatch:
+#on:
+#  push:
+#    branches: [ staging ]
+#  workflow_dispatch:
 
 env:
   IMAGE_NAME: albab/prod/sorakobra-web
