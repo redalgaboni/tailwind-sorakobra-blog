@@ -7,13 +7,16 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app analytics.umami.is plausible.sorakobra.com pagead2.googlesyndication.com googleads.g.doubleclick.net;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
-  connect-src *;
+  connect-src * plausible.sorakobra.com;
   font-src 'self';
-  frame-src giscus.app
+  frame-src giscus.app  googleads.g.doubleclick.net;
+  font-src 'self' cdnjs.buymeacoffee.com;
+  frame-src giscus.app buymeacoffee.com;
+  child-src buymeacoffee.com;
 `
 
 const securityHeaders = [
@@ -67,10 +70,12 @@ module.exports = () => {
     output,
     basePath,
     reactStrictMode: true,
-    trailingSlash: false,
     pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
     eslint: {
       dirs: ['app', 'components', 'layouts', 'scripts'],
+    },
+    experimental: {
+      scrollRestoration: true
     },
     images: {
       remotePatterns: [

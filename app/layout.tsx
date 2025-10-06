@@ -2,7 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Space_Grotesk } from 'next/font/google'
+import { Noto_Naskh_Arabic } from 'next/font/google';
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
@@ -11,12 +11,17 @@ import Footer from '@/components/Footer'
 import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
+import PlausibleTracker from '@/components/PlausibleTracker'
+import AdSense from '@/components/AdSense'
 
-const space_grotesk = Space_Grotesk({
-  subsets: ['latin'],
+const noto_naskh_arabic = Noto_Naskh_Arabic({
+  subsets: ['arabic'],
   display: 'swap',
-  variable: '--font-space-grotesk',
-})
+  variable: '--font-noto-naskh-arabic',
+  weight: ['500', '600', '700'],
+  preload: true,
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -64,7 +69,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang={siteMetadata.language}
-      className={`${space_grotesk.variable} scroll-smooth`}
+      dir="rtl"
+      className={`${noto_naskh_arabic.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <link
@@ -95,6 +101,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
+        <PlausibleTracker />
+        <AdSense />
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SectionContainer>

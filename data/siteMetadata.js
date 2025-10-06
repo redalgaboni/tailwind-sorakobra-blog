@@ -1,28 +1,20 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Next.js Starter Blog',
-  author: 'Tails Azimuth',
-  headerTitle: 'TailwindBlog',
-  description: 'A blog created with Next.js and Tailwind.css',
+  title: 'موقع الصورة الكبرى',
+  author: 'رضى الكابوني',
+  headerTitle: 'الصورة الكبرى',
+  description: 'حول ما يقع في المغرب و عالمنا العربي و العالم',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
+  siteUrl: 'https://sorakobra.com/',
+  siteRepo: 'https://github.com/redalgaboni/tailwind-sorakobra-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
-  socialBanner: `${process.env.BASE_PATH || ''}/static/images/twitter-card.png`,
-  mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'address@yoursite.com',
-  github: 'https://github.com',
-  x: 'https://twitter.com/x',
-  // twitter: 'https://twitter.com/Twitter',
-  facebook: 'https://facebook.com',
-  youtube: 'https://youtube.com',
-  linkedin: 'https://www.linkedin.com',
-  threads: 'https://www.threads.net',
-  instagram: 'https://www.instagram.com',
-  medium: 'https://medium.com',
-  bluesky: 'https://bsky.app/',
-  locale: 'en-US',
+  socialBanner: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
+  //mastodon: 'https://mastodon.social/@mastodonuser',
+  email: 'redalgaboni@tutamail.com',
+  github: 'https://github.com/redalgaboni',
+  x: 'https://twitter.com/reda_lgaboni',
+  locale: 'ar',
   // set to true if you want a navbar fixed to the top
   stickyNav: false,
   analytics: {
@@ -36,18 +28,9 @@ const siteMetadata = {
       // src: 'https://us.umami.is/script.js'
       // Remember to add 'us.umami.is' in `next.config.js` as a permitted domain for the CSP
     },
-    // plausibleAnalytics: {
-    //   plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app
-    // If you are hosting your own Plausible.
-    //   src: '', // e.g. https://plausible.my-domain.com/js/script.js
-    // },
-    // simpleAnalytics: {},
-    // posthogAnalytics: {
-    //   posthogProjectApiKey: '', // e.g. 123e4567-e89b-12d3-a456-426614174000
-    // },
-    // googleAnalytics: {
-    //   googleAnalyticsId: '', // e.g. G-XXXXXXX
-    // },
+    plausibleAnalytics: {
+       plausibleDataDomain: 'sorakobra.com'
+    }
   },
   newsletter: {
     // supports mailchimp, buttondown, convertkit, klaviyo, revue, emailoctopus, beehive

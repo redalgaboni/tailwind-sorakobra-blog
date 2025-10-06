@@ -1,0 +1,34 @@
+name: Build and Push Image
+
+on:
+  push:
+    branches: [ staging ]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: albab/prod/sorakobra-web
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Login to Private Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ secrets.REGISTRY_HOST }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - name: Build and Push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Docker/prod.Dockerfile
+        tags: |
+          ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:${{ github.run_number }}
+          ${{ secrets.REGISTRY_HOST }}/${{ env.IMAGE_NAME }}:latest
+        push: true
