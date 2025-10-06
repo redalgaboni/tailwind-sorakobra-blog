@@ -8,10 +8,10 @@ services:
     image: prod/web:0.40
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_ADSENSE_ID=ca-pub-8610387457589622
-      - AD_SLOT=2678357934
+      - NEXT_PUBLIC_ADSENSE_ID=XXXXX
+      - AD_SLOT=XXX
     env_file:
-      - ../.envs/.prod.env  # Load environment variables from a file
+      - ../.envs/.prod.env
     command: npm run start
     ports:
       - "3000:3000"
@@ -50,4 +50,4 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: /Users/redaer/Documents/WORK/00_YACODATA/02_ALBAB/tailwind-nextjs-starter-blog
+      device: /home/ubuntu/01_SoraKobra/tailwind-sorakobra-blog/Docker-compose
