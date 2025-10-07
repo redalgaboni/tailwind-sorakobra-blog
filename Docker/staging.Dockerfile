@@ -35,13 +35,9 @@ RUN groupadd -g 1001 sorakobra && \
 
 WORKDIR /app
 
-# Only copy necessary files
-COPY --from=builder --chown=sorakobra:sorakobra /app/.next ./.next
-COPY --from=builder --chown=sorakobra:sorakobra /app/public ./public
-COPY --from=builder --chown=sorakobra:sorakobra /app/package*.json ./
-COPY --from=builder --chown=sorakobra:sorakobra /app/next.config.js ./
-
-COPY --from=builder --chown=sorakobra:sorakobra /app/app ./app
+# copy only package*.json files
+COPY --chown=sorakobra:sorakobra package*.json ./
+#COPY --from=builder --chown=sorakobra:sorakobra /app ./
 
 # Reinstall both prod and dev dependencies (for staging)
 USER sorakobra
