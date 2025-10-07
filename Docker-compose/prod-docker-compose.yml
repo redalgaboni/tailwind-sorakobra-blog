@@ -5,11 +5,9 @@ services:
     build:
       context: ..
       dockerfile: ./Docker/prod.Dockerfile
-    image: prod/web:0.40
+    image: prod/web:0.11
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_ADSENSE_ID=XXXXX
-      - AD_SLOT=XXX
     env_file:
       - ../.envs/.prod.env
     command: npm run start
@@ -21,7 +19,7 @@ services:
       - /app/.next 
 
   nginx:
-    image: nginx:1.29-bookworm-perl
+    image: owasp/modsecurity-crs:3.3.7-nginx-202510030310
     ports:
       - "80:80"
       - "443:443"
