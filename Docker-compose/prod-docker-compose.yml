@@ -19,13 +19,12 @@ services:
       - /app/.next 
 
   nginx:
-    image: owasp/modsecurity-crs:3.3.7-nginx-202510030310
+    image: nginx:1.29.1-bookworm-perl
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf.template:/etc/nginx/nginx.conf.template:ro
-      #- ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     depends_on:
