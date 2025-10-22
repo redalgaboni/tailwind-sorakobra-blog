@@ -6,7 +6,7 @@ const siteMetadata = {
   description: 'حول ما يقع في المغرب و عالمنا العربي و العالم',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://sorakobra.com/',
+  siteUrl: 'https://sorakobra.com',
   siteRepo: 'https://github.com/redalgaboni/tailwind-sorakobra-blog',
   siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
   socialBanner: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
@@ -29,7 +29,7 @@ const siteMetadata = {
       // Remember to add 'us.umami.is' in `next.config.js` as a permitted domain for the CSP
     },
     plausibleAnalytics: {
-       plausibleDataDomain: 'sorakobra.com'
+       plausibleDataDomain: 'https://plausible.sorakobra.com'
     }
   },
   newsletter: {
