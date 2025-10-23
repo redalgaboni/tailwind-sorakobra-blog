@@ -29,7 +29,7 @@ const siteMetadata = {
       // Remember to add 'us.umami.is' in `next.config.js` as a permitted domain for the CSP
     },
     plausibleAnalytics: {
-       plausibleDataDomain: 'https://plausible.sorakobra.com'
+       plausibleDataDomain: 'sorakobra.com'
     }
   },
   newsletter: {
