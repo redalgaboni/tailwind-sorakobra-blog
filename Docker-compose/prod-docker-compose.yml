@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: ./Docker/prod.Dockerfile
-    image: prod/web:0.13
+    image: prod/web:0.14
     environment:
       - NODE_ENV=production
     env_file:
@@ -17,11 +17,3 @@ services:
       - ../:/app  
       - /app/node_modules
       - /app/.next
-
-#volumes:
-#  data_blog:
-#    driver: local
-#    driver_opts:
-#      o: bind
-#      type: none
-#      device: /home/ubuntu/01_SoraKobra/tailwind-sorakobra-blog
