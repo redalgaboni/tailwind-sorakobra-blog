@@ -9,5 +9,3 @@ certbot/conf/accounts/
 .github/
 Docker-compose/
 *.md
-node_modules
-.next
