@@ -5,20 +5,20 @@ services:
     build:
       context: ..
       dockerfile: ./Docker/staging.Dockerfile
-    image: staging/web:0.44
+    image: staging/web:0.45
     environment:
       - WATCHPACK_POLLING=true  # Enable polling for file changes
       - NODE_ENV=development
     env_file:
-      - ../.envs/.staging.env  # Load environment variables from a file
+      - ../.envs/.staging.env 
     command: npm run dev 
     ports:
       - "3000:3000"
     user: root
     volumes:
-      - ../:/app  # Mount the current directory to /app in the container
-      - /app/node_modules  # Prevent overwriting node_modules in the container
-      - /app/.next  # Prevent overwriting .next build artifacts
+      - ../:/app  
+      - /app/node_modules 
+      - /app/.next  
 volumes:
   data_blog:
     driver: local

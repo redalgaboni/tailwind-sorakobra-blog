@@ -4,7 +4,7 @@ const siteMetadata = {
   author: 'رضى الكابوني',
   headerTitle: 'الصورة الكبرى',
   description: 'حول ما يقع في المغرب و عالمنا العربي و العالم',
-  language: 'en-us',
+  language: 'ar',
   theme: 'system', // system, dark or light
   siteUrl: 'https://sorakobra.com',
   siteRepo: 'https://github.com/redalgaboni/tailwind-sorakobra-blog',
@@ -75,9 +75,9 @@ const siteMetadata = {
     // provider: 'algolia',
     // algoliaConfig: {
     //   // The application ID provided by Algolia
-    //   appId: 'R2IYF7ETH7',
+    //   appId: 'XXXXXX',
     //   // Public API key: it is safe to commit it
-    //   apiKey: '599cec31baffa4868cae4e79f180729b',
+    //   apiKey: '599cec31bXXXXXX',
     //   indexName: 'docsearch',
     // },
   },
