@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 export default function AdUnit() {
   const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_ID;
-  const adSlot = process.env.AD_SLOT;
+  const adSlot = process.env.NEXT_PUBLIC_AD_SLOT;
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
