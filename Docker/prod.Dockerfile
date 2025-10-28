@@ -1,6 +1,4 @@
 FROM node:20 as builder
-# Install Corepack
-RUN corepack enable
 
 # Create non-root user
 RUN groupadd -g 1001 sorakobra && \
@@ -13,7 +11,7 @@ WORKDIR /app
 # Copy package.json and install dependencies
 COPY --chown=sorakobra:sorakobra package*.json ./
 USER sorakobra
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 # Run prepare scripts if needed
 RUN npm run prepare
@@ -27,6 +25,8 @@ RUN mkdir -p .next public && \
 
 FROM node:20-slim
 
+ENV NEXT_TELEMETRY_DISABLED 1
+
 # Create non-root user
 RUN groupadd -g 1001 sorakobra && \
     useradd -u 1001 -g sorakobra -m sorakobra && \
@@ -36,13 +36,12 @@ RUN groupadd -g 1001 sorakobra && \
 WORKDIR /app
 
 # Only copy necessary files
+COPY --chown=sorakobra:sorakobra package*.json ./
+
 COPY --from=builder --chown=sorakobra:sorakobra /app/.next ./.next
 COPY --from=builder --chown=sorakobra:sorakobra /app/public ./public
-COPY --from=builder --chown=sorakobra:sorakobra /app/package*.json ./
 COPY --from=builder --chown=sorakobra:sorakobra /app/next.config.js ./
+COPY --from=builder --chown=sorakobra:sorakobra /app/node_modules ./node_modules
 
-COPY --from=builder --chown=sorakobra:sorakobra /app/app ./app
-
-# Reinstall both prod and dev dependencies (for staging)
 USER sorakobra
-RUN npm install --legacy-peer-deps
+RUN npm install --omit=dev --ignore-scripts

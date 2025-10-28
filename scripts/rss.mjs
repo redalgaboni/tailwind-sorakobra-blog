@@ -3,10 +3,22 @@ import path from 'path'
 import { slug } from 'github-slugger'
 import { escape } from 'pliny/utils/htmlEscaper.js'
 import siteMetadata from '../data/siteMetadata.js'
-import tagData from '../app/tag-data.json' assert { type: 'json' }
+import { readFile } from 'fs/promises';
+import { fileURLToPath } from 'url';
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
 import { sortPosts } from 'pliny/utils/contentlayer.js'
 
+// Helper to get the directory name of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const tagDataPath = path.join(__dirname, '../app/tag-data.json');
+
+// Read the file content as a string
+const tagDataContent = await readFile(tagDataPath, 'utf8');
+
+// Parse the JSON string into a JavaScript object
+const tagData = JSON.parse(tagDataContent);
 const outputFolder = path.join(process.cwd(), 'public')
 
 const generateRssItem = (config, post) => `

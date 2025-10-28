@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: ./Docker/prod.Dockerfile
-    image: prod/web:0.14
+    image: prod/web:0.20
     environment:
       - NODE_ENV=production
     env_file:
