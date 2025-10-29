@@ -6,7 +6,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' https: giscus.app cdnjs.buymeacoffee.com plausible.io analytics.umami.is plausible.sorakobra.com pagead2.googlesyndication.com ep2.adtrafficquality.google googleads.g.doubleclick.net;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' https: giscus.app plausible.io analytics.umami.is plausible.sorakobra.com pagead2.googlesyndication.com ep2.adtrafficquality.google googleads.g.doubleclick.net;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src *.s3.amazonaws.com;
