@@ -12,7 +12,8 @@ import siteMetadata from '@/data/siteMetadata'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import PlausibleTracker from '@/components/PlausibleTracker'
-import AdSense from '@/components/AdSense'
+
+const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_ID;
 
 const noto_naskh_arabic = Noto_Naskh_Arabic({
   subsets: ['arabic'],
@@ -100,9 +101,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
+      {/* 🛑 ADSENSE SCRIPT INJECTION 🛑 */}
+      {adsenseClient && (
+        <script
+          key="adsense-script"
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+          crossOrigin="anonymous"
+        />
+      )}
+      {/* ------------------------------- */}
       <body className="bg-white pl-[calc(100vw-100%)] text-black antialiased dark:bg-gray-950 dark:text-white">
         <PlausibleTracker />
-        <AdSense />
         <ThemeProviders>
           <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
           <SectionContainer>
