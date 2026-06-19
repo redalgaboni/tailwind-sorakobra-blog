@@ -44,4 +44,4 @@ COPY --from=builder --chown=sorakobra:sorakobra /app/next.config.js ./
 COPY --from=builder --chown=sorakobra:sorakobra /app/node_modules ./node_modules
 
 USER sorakobra
-RUN npm install --omit=dev --ignore-scripts
+RUN npm install --omit=dev --legacy-peer-deps --ignore-scripts
