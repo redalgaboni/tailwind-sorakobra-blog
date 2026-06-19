@@ -13,7 +13,7 @@ WORKDIR /app
 # Copy package.json and install dependencies
 COPY --chown=sorakobra:sorakobra package*.json ./
 USER sorakobra
-RUN npm install --legacy-peer-deps
+RUN npm install react@19.2.3 react-dom@19.2.3 next@15.1.11 --legacy-peer-deps
 
 # Run prepare scripts if needed
 RUN npm run prepare
@@ -41,4 +41,4 @@ COPY --chown=sorakobra:sorakobra package*.json ./
 
 # Reinstall both prod and dev dependencies (for staging)
 USER sorakobra
-RUN npm install --legacy-peer-deps
+RUN npm install react@19.2.3 react-dom@19.2.3 next@15.1.11 --legacy-peer-deps

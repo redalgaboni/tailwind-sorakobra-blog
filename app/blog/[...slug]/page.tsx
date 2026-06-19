@@ -56,7 +56,7 @@ export async function generateMetadata(props: {
       title: post.title,
       description: post.summary,
       siteName: siteMetadata.title,
-      locale: 'en_US',
+      locale: siteMetadata.locale,
       type: 'article',
       publishedTime: publishedAt,
       modifiedTime: modifiedAt,
@@ -104,6 +104,21 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
     }
   })
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: siteMetadata.title, item: siteMetadata.siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'المقالات', item: `${siteMetadata.siteUrl}/blog` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `${siteMetadata.siteUrl}/blog/${slug}`,
+      },
+    ],
+  }
+
   const Layout = layouts[post.layout || defaultLayout]
 
   return (
@@ -111,6 +126,10 @@ export default async function Page(props: { params: Promise<{ slug: string[] }> 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Layout content={mainContent} authorDetails={authorDetails} next={next} prev={prev}>
         <MDXLayoutRenderer code={post.body.code} components={components} toc={post.toc} />

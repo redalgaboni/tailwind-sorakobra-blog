@@ -5,7 +5,7 @@ services:
     build:
       context: ..
       dockerfile: ./Docker/staging.Dockerfile
-    image: staging/web:0.45
+    image: staging/web:1.4
     environment:
       - WATCHPACK_POLLING=true  # Enable polling for file changes
       - NODE_ENV=development
