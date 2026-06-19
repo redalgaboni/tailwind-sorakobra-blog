@@ -1,4 +1,3 @@
-version: '3'
 name: prod-blog-0.1
 services:
   web:
@@ -10,7 +9,7 @@ services:
       - NODE_ENV=production
     env_file:
       - ../.envs/.prod.env
-    command: npm run start
+    command: npm run serve
     ports:
       - "3000:3000"
     volumes:
