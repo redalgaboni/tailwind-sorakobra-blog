@@ -2,7 +2,7 @@ import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
 import 'remark-github-blockquote-alert/alert.css'
 
-import { Noto_Naskh_Arabic } from 'next/font/google';
+import { Noto_Naskh_Arabic } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
 import { SearchProvider, SearchConfig } from 'pliny/search'
 import Header from '@/components/Header'
@@ -13,7 +13,7 @@ import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
 import PlausibleTracker from '@/components/PlausibleTracker'
 
-const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_ID;
+const adsenseClient = process.env.NEXT_PUBLIC_ADSENSE_ID
 
 const noto_naskh_arabic = Noto_Naskh_Arabic({
   subsets: ['arabic'],
@@ -22,7 +22,7 @@ const noto_naskh_arabic = Noto_Naskh_Arabic({
   weight: ['500', '600', '700'],
   preload: true,
   adjustFontFallback: true,
-});
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     url: './',
     siteName: siteMetadata.title,
     images: [siteMetadata.socialBanner],
-    locale: 'en_US',
+    locale: siteMetadata.locale,
     type: 'website',
   },
   alternates: {
@@ -101,6 +101,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href={`${basePath}/feed.xml`} />
+      <link rel="alternate" hrefLang={siteMetadata.language} href={siteMetadata.siteUrl} />
+      <link rel="alternate" hrefLang="x-default" href={siteMetadata.siteUrl} />
       {/* 🛑 ADSENSE SCRIPT INJECTION 🛑 */}
       {adsenseClient && (
         <script

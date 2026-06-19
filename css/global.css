@@ -1,0 +1,25 @@
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .bmc-button iframe {
+    width: 160px !important;
+    height: 48px !important;
+    transform: scale(0.75);
+    transform-origin: top left;
+  }
+
+  .bmc-button img[src*='default-green'] {
+    width: 160px !important;
+    height: auto !important;
+    max-width: 100%;
+  }
+}
+
+/* RTL Layout Fixes (for Arabic) */
+html[dir='rtl'] .bmc-button iframe {
+  transform-origin: top right;
+}
+
+html[dir='rtl'] .bmc-button a {
+  direction: rtl;
+  text-align: right;
+}
